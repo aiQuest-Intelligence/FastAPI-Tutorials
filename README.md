@@ -3,9 +3,7 @@
 Welcome to the **Complete FastAPI Course**! This comprehensive guide will take you through the basics of FastAPI, a modern, fast web framework for building APIs with Python, to its advanced features. Designed for developers of all levels, this course will help you leverage FastAPI's capabilities to build high-performance web applications and APIs.
 
 ---
-
 ## Instructor
-
 **Abu Noman Basar**  
 [LinkedIn Profile](https://www.linkedin.com/in/anbasar/)  
 Software Engineer (Python), eAppair Ltd  
@@ -14,7 +12,6 @@ Django Instructor at [aiQuest Intelligence](https://aiquest.org/courses/become-a
 ---
 
 ## Course Content
-
 ### Introduction and Basics
 - **Introduction to FastAPI and Key Features**: Overview of FastAPI and its standout features.
 - **Installing and Setting Up the FastAPI Environment**: Step-by-step guide to installing and setting up your development environment.
