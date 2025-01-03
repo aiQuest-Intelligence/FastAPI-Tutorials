@@ -66,4 +66,4 @@ Django Instructor at [aiQuest Intelligence](https://aiquest.org/courses/become-a
 
 ---
 
-### Happy Coding with FastAPI! 🚀
+### Happy Coding with FastAPI!
