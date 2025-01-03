@@ -1,6 +1,6 @@
 # Complete FastAPI Course
 
-Welcome to the **Complete FastAPI Course**! This comprehensive guide will take you through the basics of FastAPI, a modern, fast web framework for building APIs with Python, to its advanced features. Designed for developers of all levels, this course will help you leverage FastAPI's capabilities to build high-performance web applications and APIs.
+Welcome to the **Complete FastAPI Course**! This comprehensive guide will take you through the basics of FastAPI, a modern, fast web framework for building `APIs with Python`, to its advanced features. Designed for developers of all levels, this course will help you leverage FastAPI's capabilities to build high-performance web applications and APIs.
 
 ---
 ## Instructor
