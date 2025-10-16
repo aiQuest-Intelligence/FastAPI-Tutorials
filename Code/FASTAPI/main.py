@@ -1,4 +1,4 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException, status
 from pydantic import BaseModel, HttpUrl
 import psycopg2
 from psycopg2.extras import RealDictCursor
@@ -49,4 +49,18 @@ def aiquest():
 @app.get("/django/api")
 def django():
     return {"Type": "Basict to Advanced"}
+
+
+
+@app.get("/course/{id}")
+def get_course(id:int):
+    cursor.execute(""" SELECT * FROM course WHERE id = %s """, (str(id),))
+    course = cursor.fetchone()
+    if not course:
+        raise HTTPException(
+            status_code = status.HTTP_404_NOT_FOUND,
+            detail= f"Course with id:{id} was not found"
+        )
+    return{"Course_detail": course}
+
 
