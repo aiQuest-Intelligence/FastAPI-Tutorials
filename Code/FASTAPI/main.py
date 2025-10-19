@@ -1,4 +1,4 @@
-from fastapi import FastAPI, HTTPException, status
+from fastapi import FastAPI, HTTPException, status, Response
 from pydantic import BaseModel, HttpUrl
 import psycopg2
 from psycopg2.extras import RealDictCursor
@@ -62,5 +62,27 @@ def get_course(id:int):
             detail= f"Course with id:{id} was not found"
         )
     return{"Course_detail": course}
+
+
+@app.delete("/course/{id}", status_code=status.HTTP_204_NO_CONTENT)
+def delete_course(id: int):
+    cursor.execute("""DELETE FROM course WHERE id = %s returning * """, ((str(id),)))
+    deleted_course = cursor.fetchone()
+    conn.commit()
+    if deleted_course == None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail= f"course with id: {id} does not exist")
+    return Response(status_code=status.HTTP_404_NOT_FOUND)
+
+@app.put("/course/{id}")
+def update_courde(id: int, course: Course):
+    cursor.execute("""UPDATE course SET name = %s, instructor = %s, duration = %s, website = %s WHERE id = %s RETURNING * """, (course.name, course.instructor, course.duration, str(course.website), str(id)))
+    updated_course = cursor.fetchone()
+    conn.commit()
+
+    if updated_course == None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"course with id: {id} does not exist")
+    return{"data": updated_course}
+    
+    
 
 
