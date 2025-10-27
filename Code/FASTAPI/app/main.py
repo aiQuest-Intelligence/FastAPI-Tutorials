@@ -51,7 +51,7 @@ def create_course(course:Course, db: Session = Depends(get_db)):
     db.add(new_course)
     db.commit()
     db.refresh(new_course)
-    return {"Course: ", new_course}
+    return {"Course": new_course}
 
 
 @app.get("/course")
@@ -64,6 +64,11 @@ def aiquest():
     data = cursor.fetchall()
     return {"Data":data}
 
+@app.get("/coursealchemy")
+def course(db:Session = Depends(get_db)):
+    course = db.query(models.Course).all()
+    return {"Course": course}
+
 @app.get("/django/api")
 def django():
     return {"Type": "Basict to Advanced"}
@@ -74,6 +79,16 @@ def django():
 def get_course(id:int):
     cursor.execute(""" SELECT * FROM course WHERE id = %s """, (str(id),))
     course = cursor.fetchone()
+    if not course:
+        raise HTTPException(
+            status_code = status.HTTP_404_NOT_FOUND,
+            detail= f"Course with id:{id} was not found"
+        )
+    return{"Course_detail": course}
+
+@app.get("/coursealchemy/{id}")
+def aiquest_course(id:int, db: Session = Depends(get_db)):
+    course = db.query(models.Course).filter(models.Course.id == id).first()
     if not course:
         raise HTTPException(
             status_code = status.HTTP_404_NOT_FOUND,
@@ -102,9 +117,7 @@ def update_course(id: int, course: Course):
     return{"data": updated_course}
 
 
-@app.get("/coursealchemy")
-def course(db:Session = Depends(get_db)):
-    return {"status": "sqlalchemy ORM working"}
+
     
     
 
