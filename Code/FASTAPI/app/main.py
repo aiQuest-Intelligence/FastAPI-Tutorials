@@ -4,7 +4,7 @@ import psycopg2
 from psycopg2.extras import RealDictCursor
 import time
 from . import models
-from sqlalchemy.orm import session
+from sqlalchemy.orm import Session
 from . database import engine, get_db
 
 
@@ -39,6 +39,19 @@ def create_post(post: Course):
     new_post = cursor.fetchone()
     conn.commit()
     return{"data": new_post}
+
+@app.post('/courses')
+def create_course(course:Course, db: Session = Depends(get_db)):
+    new_course = models.Course(
+        name = course.name,
+        instructor = course.instructor,
+        duration = course.duration,
+        website = str(course.website)
+    )
+    db.add(new_course)
+    db.commit()
+    db.refresh(new_course)
+    return {"Course: ", new_course}
 
 
 @app.get("/course")
@@ -90,7 +103,7 @@ def update_course(id: int, course: Course):
 
 
 @app.get("/coursealchemy")
-def course(db:session = Depends(get_db)):
+def course(db:Session = Depends(get_db)):
     return {"status": "sqlalchemy ORM working"}
     
     
