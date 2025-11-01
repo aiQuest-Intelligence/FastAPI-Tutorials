@@ -116,9 +116,23 @@ def update_course(id: int, course: Course):
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"course with id: {id} does not exist")
     return{"data": updated_course}
 
+@app.put("/aiquest_course/{id}")
+def update_aiquest_course(id:int, updated_course: Course, db:Session=Depends(get_db)):
+    course_query = db.query(models.Course).filter(models.Course.id==id)
+    course = course_query.first()
+    if not course:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"course with id: {id} does not exist")
+    update_data = updated_course.model_dump()
+    update_data["website"] = str(update_data["website"])
+    course_query.update(update_data, synchronize_session=False)
+    db.commit()
+    db.refresh(course)
+    return {"Course_detail": course}
+
+
 
 
     
-    
+  
 
 
