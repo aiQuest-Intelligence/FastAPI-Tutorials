@@ -106,6 +106,18 @@ def delete_course(id: int):
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail= f"course with id: {id} does not exist")
     return Response(status_code=status.HTTP_404_NOT_FOUND)
 
+@app.delete("/aiquest_course_delete/{id}", status_code=status.HTTP_204_NO_CONTENT)
+def delete_aiquest_course(id:int, db:Session=Depends(get_db)):
+    course_query = db.query(models.Course).filter(models.Course.id==id)
+    course = course_query.first()
+    if not course:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail= f"course with id: {id} does not exist")
+    course_query.delete(synchronize_session=False)
+    db.commit()
+    return Response(status_code=status.HTTP_204_NO_CONTENT)
+
+
+
 @app.put("/course/{id}")
 def update_course(id: int, course: Course):
     cursor.execute("""UPDATE course SET name = %s, instructor = %s, duration = %s, website = %s WHERE id = %s RETURNING * """, (course.name, course.instructor, course.duration, str(course.website), str(id)))
