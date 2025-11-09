@@ -134,7 +134,13 @@ def update_aiquest_course(id:int, updated_course: schemas.CourseCreate, db:Sessi
     return course
 
 
-
+@app.post("/users", status_code=status.HTTP_201_CREATED, response_model=schemas.UserRes)
+def aiquest_user(user:schemas.UserCreate, db:Session=Depends(get_db)):
+    new_user = models.User(**user.model_dump())
+    db.add(new_user)
+    db.commit()
+    db.refresh(new_user)
+    return new_user
 
     
   
