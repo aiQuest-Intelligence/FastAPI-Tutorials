@@ -5,12 +5,12 @@ from sqlalchemy.orm import sessionmaker
 SQLALCHEMY_DATABASE_URL = 'postgresql://postgres:1234@localhost/aiquest'
 
 engine = create_engine(SQLALCHEMY_DATABASE_URL)
-SeasionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+SesionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 Base = declarative_base()
 
 def get_db():
-    db = SeasionLocal()
+    db = SesionLocal()
     try:
         yield db
     finally:

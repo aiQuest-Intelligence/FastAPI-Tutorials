@@ -27,4 +27,4 @@ class UserRes(BaseModel):
     created_at: datetime
     
     class Config:
-        orrm_model = True
+        orm_model = True
