@@ -4,9 +4,12 @@ from .. import models, schemas, utils
 from .. database import get_db
 from typing import List
 
-router = APIRouter()
+router = APIRouter(
+    prefix="/users",
+    tags= ['Users']
+)
 
-@router.post("/users", status_code=status.HTTP_201_CREATED, response_model=schemas.UserRes)
+@router.post("/", status_code=status.HTTP_201_CREATED, response_model=schemas.UserRes)
 def aiquest_user(user:schemas.UserCreate, db:Session=Depends(get_db)):
     if db.query(models.User).filter(models.User.email == user.email).first():
         raise HTTPException(
