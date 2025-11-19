@@ -3,6 +3,7 @@ from sqlalchemy.orm import Session
 from .. import models, schemas
 from .. database import get_db
 from typing import List
+from .. import oauth2
 
 router = APIRouter(
     prefix="/course",
@@ -10,7 +11,7 @@ router = APIRouter(
 )
 
 @router.post('/', response_model=schemas.CourseResponse)
-def create_course(course:schemas.CourseCreate, db: Session = Depends(get_db)):
+def create_course(course:schemas.CourseCreate, db: Session = Depends(get_db), get_current_user: int=Depends(oauth2.get_current_user)):
     new_course = models.Course(**course.model_dump())
     new_course.website = str(course.website)
     db.add(new_course)
@@ -21,7 +22,7 @@ def create_course(course:schemas.CourseCreate, db: Session = Depends(get_db)):
 
 
 @router.get("/", response_model= List[schemas.CourseResponse])
-def course(db:Session = Depends(get_db)):
+def course(db:Session = Depends(get_db), get_current_user: int=Depends(oauth2.get_current_user)):
     courses = db.query(models.Course).all()
     return courses
 
