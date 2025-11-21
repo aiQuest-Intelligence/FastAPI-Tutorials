@@ -11,6 +11,7 @@ class CourseCreate(BaseModel):
 
 class CourseResponse(CourseCreate):
     id : int
+    creator_id : int
 
     class Config:
         orm_model = True

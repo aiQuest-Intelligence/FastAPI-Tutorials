@@ -14,7 +14,7 @@ router = APIRouter(
 def create_course(course:schemas.CourseCreate, db: Session = Depends(get_db), current_user: models.User = Depends(oauth2.get_current_user)):
     print(current_user.id)
     print(current_user.email)
-    new_course = models.Course(**course.model_dump())
+    new_course = models.Course(**course.model_dump(), creator_id = current_user.id)
     new_course.website = str(course.website)
     db.add(new_course)
     db.commit()
