@@ -11,7 +11,9 @@ router = APIRouter(
 )
 
 @router.post('/', response_model=schemas.CourseResponse)
-def create_course(course:schemas.CourseCreate, db: Session = Depends(get_db), get_current_user: int=Depends(oauth2.get_current_user)):
+def create_course(course:schemas.CourseCreate, db: Session = Depends(get_db), current_user: models.User = Depends(oauth2.get_current_user)):
+    print(current_user.id)
+    print(current_user.email)
     new_course = models.Course(**course.model_dump())
     new_course.website = str(course.website)
     db.add(new_course)
@@ -22,14 +24,14 @@ def create_course(course:schemas.CourseCreate, db: Session = Depends(get_db), ge
 
 
 @router.get("/", response_model= List[schemas.CourseResponse])
-def course(db:Session = Depends(get_db), get_current_user: int=Depends(oauth2.get_current_user)):
+def course(db:Session = Depends(get_db), current_user: models.User = Depends(oauth2.get_current_user)):
     courses = db.query(models.Course).all()
     return courses
 
 
 
 @router.get("/{id}", response_model=schemas.CourseResponse)
-def aiquest_course(id:int, db: Session = Depends(get_db)):
+def aiquest_course(id:int, db: Session = Depends(get_db), current_user: models.User = Depends(oauth2.get_current_user)):
     course = db.query(models.Course).filter(models.Course.id == id).first()
     if not course:
         raise HTTPException(
@@ -42,7 +44,7 @@ def aiquest_course(id:int, db: Session = Depends(get_db)):
 
 
 @router.delete("/{id}", status_code=status.HTTP_204_NO_CONTENT)
-def delete_aiquest_course(id:int, db:Session=Depends(get_db)):
+def delete_aiquest_course(id:int, db:Session=Depends(get_db), current_user: models.User = Depends(oauth2.get_current_user)):
     course_query = db.query(models.Course).filter(models.Course.id==id)
     course = course_query.first()
     if not course:
@@ -55,7 +57,7 @@ def delete_aiquest_course(id:int, db:Session=Depends(get_db)):
 
 
 @router.put("/{id}", response_model=schemas.CourseResponse)
-def update_aiquest_course(id:int, updated_course: schemas.CourseCreate, db:Session=Depends(get_db)):
+def update_aiquest_course(id:int, updated_course: schemas.CourseCreate, db:Session=Depends(get_db), current_user: models.User = Depends(oauth2.get_current_user)):
     course_query = db.query(models.Course).filter(models.Course.id==id)
     course = course_query.first()
     if not course:
