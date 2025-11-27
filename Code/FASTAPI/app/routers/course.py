@@ -25,7 +25,8 @@ def create_course(course:schemas.CourseCreate, db: Session = Depends(get_db), cu
 
 @router.get("/", response_model= List[schemas.CourseResponse])
 def course(db:Session = Depends(get_db), current_user: models.User = Depends(oauth2.get_current_user)):
-    courses = db.query(models.Course).all()
+    # courses = db.query(models.Course).all()
+    courses = db.query(models.Course).filter(models.Course.creator_id == current_user.id).all()
     return courses
 
 
@@ -38,6 +39,8 @@ def aiquest_course(id:int, db: Session = Depends(get_db), current_user: models.U
             status_code = status.HTTP_404_NOT_FOUND,
             detail= f"Course with id:{id} was not found"
         )
+    if course.creator_id != current_user.id:
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Not authorized action")
     return course
 
 
@@ -49,6 +52,8 @@ def delete_aiquest_course(id:int, db:Session=Depends(get_db), current_user: mode
     course = course_query.first()
     if not course:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail= f"course with id: {id} does not exist")
+    if course.creator_id != current_user.id:
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Not authorized action")
     course_query.delete(synchronize_session=False)
     db.commit()
     return Response(status_code=status.HTTP_204_NO_CONTENT)
@@ -62,6 +67,8 @@ def update_aiquest_course(id:int, updated_course: schemas.CourseCreate, db:Sessi
     course = course_query.first()
     if not course:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"course with id: {id} does not exist")
+    if course.creator_id != current_user.id:
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Not authorized action")
     update_data = updated_course.model_dump()
     update_data["website"] = str(update_data["website"])
     course_query.update(update_data, synchronize_session=False)
